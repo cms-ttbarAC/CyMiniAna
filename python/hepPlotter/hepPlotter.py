@@ -497,7 +497,7 @@ class HepPlotter(object):
 
         # Configure the colorbar
         cbar = plt.colorbar()
-        if self.logplot["y"]:
+        if self.logplot["data"]:
             cbar.ax.set_yticklabels( [r"10$^{\text{%s}}$"%(util.extract(i.get_text())) for i in cbar.ax.get_yticklabels()] )
         else:
             cbar.ax.set_yticklabels( [r"$\text{%s}$"%(i.get_text().replace(r'$','')) for i in cbar.ax.get_yticklabels()],**fontProperties )
