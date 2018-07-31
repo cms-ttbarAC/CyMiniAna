@@ -157,9 +157,15 @@ void ttbarReco::execute(std::vector<Lepton>& leptons, std::vector<Neutrino>& nu,
     dummy_jet.isGood = false;
     m_ttbar1L.jet = (ak4candidate>=0) ? jets.at(ak4candidate) : dummy_jet;
 
+    TLorentzVector leptop;
+    leptop = nu.at(0).p4 + lep.p4 + m_ttbar1L.jet.p4;
+    m_ttbar1L.leptop = leptop;
+
     Ljet dummy_ljet;
     dummy_ljet.isGood = false;
     m_ttbar1L.ljet = (ak8candidate>=0) ? ljets.at(ak8candidate) : dummy_ljet;
+
+    m_ttbar1L.dy = lep.charge * ( std::abs(leptop.Rapidity()) - std::abs(m_ttbar1L.ljet.p4.Rapidity()) );
 
     cma::DEBUG("TTBARRECO : Ttbar built ");
 

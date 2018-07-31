@@ -178,7 +178,7 @@ int main(int argc, char** argv) {
         if (makeHistograms)
             histMaker.initialize( *outputFile,doSystWeights );
         if (makeEfficiencies)
-            effMaker.bookEffs( *outputFile );
+            effMaker.initialize( *outputFile );
 
         for (auto& x : evtSels) x.setCutflowHistograms( *outputFile );  // setup cutflow histograms
 

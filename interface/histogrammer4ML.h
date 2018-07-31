@@ -15,12 +15,12 @@
 #include <map>
 #include <vector>
 
-#include "Analysis/CyMiniAna/interface/histogrammer.h"
+#include "Analysis/CyMiniAna/interface/histogrammerBase.h"
 #include "Analysis/CyMiniAna/interface/configuration.h"
 #include "Analysis/CyMiniAna/interface/tools.h"
 #include "Analysis/CyMiniAna/interface/Event.h"
 
-class histogrammer4ML : public histogrammer {
+class histogrammer4ML : public histogrammerBase {
   public:
 
     // Default - so root can load based on a name;

@@ -16,72 +16,26 @@ https://root.cern.ch/doc/master/classTEfficiency.html
 
 
 efficiency::efficiency(configuration &cmaConfig) : 
-  m_config(&cmaConfig){
-   m_map_efficiencies.clear();
-  }
+  efficiencyBase::efficiencyBase(cmaConfig){
+    m_isTtbar = m_config->isTtbar();
+    m_isOneLeptonAnalysis = m_config->isOneLeptonAnalysis();
+}
 
 efficiency::~efficiency() {}
 
 
-void efficiency::bookEffs( TFile& outputFile ){
+void efficiency::initialize( TFile& outputFile ){
     /* Book efficiencies -- modify/inherit this function for analysis-specific efficiencies */
-    m_names.resize(0); // append names to this to keep track of later
     outputFile.cd();
 
-    init_eff("dilution_inclusive",    1, 0, 1);     // delta|y| reconstruction efficiency
+    efficiencyBase::init_eff("dilution_incl",    1, 0, 1);     // delta|y| reconstruction efficiency (inclusive)
+    efficiencyBase::init_eff("dilution_mtt",   500, 0, 5000);  // delta|y| reconstruction efficiency (mttbar)
+    efficiencyBase::init_eff("dilution_ytt",   100, 0, 1000);  // delta|y| reconstruction efficiency (yttbar)
+    efficiencyBase::init_eff("dilution_pttt",   50, 0, 5);     // delta|y| reconstruction efficiency (pT-ttbar)
+    efficiencyBase::init_eff("dilution_betatt", 10, 0, 1);     // delta|y| reconstruction efficiency (beta-ttbar)
 
     return;
 }
-
-// -- Existing efficiencies
-void efficiency::init_eff(const TH1 &passed, const TH1 &total){
-    /* Initialize efficiency -- existing efficiencies */
-    std::string name(total.GetName());
-    name+="_clone";
-    m_map_efficiencies[name] = new TEfficiency(passed,total);
-
-    return;
-} 
-
-// -- 1D efficiencies
-void efficiency::init_eff( const std::string &name, const unsigned int nBins, const double x_min, const double x_max ){
-    /* Initialize efficiency -- equal bins */
-    m_map_efficiencies[name] = new TEfficiency((name).c_str(), (name).c_str(),nBins,x_min,x_max);
-    m_map_efficiencies[name]->SetUseWeightedEvents();
-
-    return;
-}
-
-void efficiency::init_eff( const std::string &name, const unsigned int nBins, const double *xbins ){
-    /* Initialize efficiency -- variable bins */
-    m_map_efficiencies[name] = new TEfficiency((name).c_str(), (name).c_str(),nBins,xbins);
-    m_map_efficiencies[name]->SetUseWeightedEvents();
-
-    return;
-}
-
-// -- 2D efficiencies
-void efficiency::init_eff( const std::string &name, const unsigned int nBinsX, const double x_min, const double x_max,
-                              const unsigned int nBinsY, const double y_min, const double y_max ){
-    /* Initialize efficiency -- equal bins */
-    m_map_efficiencies[name] = new TEfficiency((name).c_str(), (name).c_str(),
-                                               nBinsX,x_min,x_max,nBinsY,y_min,y_max);
-    m_map_efficiencies[name]->SetUseWeightedEvents();
-
-    return;
-}
-
-void efficiency::init_eff( const std::string &name, const unsigned int nBinsX, const double *xbins,
-                              const unsigned int nBinsY, const double *ybins ){
-    /* Initialize efficiency -- variable bins */
-    m_map_efficiencies[name] = new TEfficiency((name).c_str(), (name).c_str(),
-                                               nBinsX,xbins,nBinsY,ybins);
-    m_map_efficiencies[name]->SetUseWeightedEvents();
-
-    return;
-}
-
-
 
 void efficiency::fill( Event &event, const std::vector<unsigned int>& evtsel_decisions ){
     /* Fill efficiencies -- just use information from the event 
@@ -89,25 +43,46 @@ void efficiency::fill( Event &event, const std::vector<unsigned int>& evtsel_dec
        Example
        Fill an efficiency for jet trigger vs leading jet pT 
     */
-    double reco_deltay  = 0.0;
-    double weight       = event.nominal_weight();
+    Ttbar1L ttbarSL = event.ttbar1L();
 
-    fill("dilution_inclusive", reco_deltay, true, weight);
+    double dy(0.0);
+    TLorentzVector top_lep;
+    TLorentzVector top_had;
+    TLorentzVector ttbar;
 
-    return;
-}
+    if (m_isOneLeptonAnalysis){
+        dy      = ttbarSL.dy;
+        top_lep = ttbarSL.leptop;
+        top_had = ttbarSL.ljet.p4;
+        ttbar   = top_had+top_lep;
+    }
 
-void efficiency::fill( const std::string &name, const double &value, const bool &decision, const double &weight ){
-    /* Fill efficiencies with values! */
-    m_map_efficiencies.at(name)->FillWeighted(decision, weight, value);
+    float mtt    = ttbar.M();
+    float pttt   = ttbar.Pt();
+    float ytt    = std::abs(ttbar.Rapidity());
+    float betatt = std::abs(top_had.Pz() + top_lep.Pz()) / (top_had.E() + top_lep.E());
 
-    return;
-}
+    float true_dy(0.0);
+    if (m_isTtbar){
+        std::vector<TruthTop> truth_tops = event.truth();
+        std::vector<Parton> truth_partons = event.truth_partons();
+        if (truth_tops.size()==2){
+            TruthTop top0 = truth_tops.at(0);
+            TruthTop top1 = truth_tops.at(1);
+            Parton ptop0  = truth_partons.at( top0.Top );
+            Parton ptop1  = truth_partons.at( top1.Top );
 
-void efficiency::fill( const std::string &name, 
-                         const double &xvalue, const double &yvalue, const bool &decision, const double &weight ){
-    /* Fill efficiencies with values! */
-    m_map_efficiencies.at(name)->Fill(decision, weight, xvalue, yvalue);
+            true_dy = (top0.isTop && top1.isAntiTop) ? std::abs(ptop0.p4.Rapidity()) - std::abs(ptop1.p4.Rapidity()) :
+                                                       std::abs(ptop1.p4.Rapidity()) - std::abs(ptop0.p4.Rapidity());
+            bool correct_dy_sign = true_dy*dy>0;
+
+            efficiencyBase::fill("dilution_incl",       dy, correct_dy_sign );
+            efficiencyBase::fill("dilution_mtt",       mtt, correct_dy_sign );
+            efficiencyBase::fill("dilution_ytt",       ytt, correct_dy_sign );
+            efficiencyBase::fill("dilution_pttt",     pttt, correct_dy_sign );
+            efficiencyBase::fill("dilution_betatt", betatt, correct_dy_sign );
+        }
+    }
 
     return;
 }

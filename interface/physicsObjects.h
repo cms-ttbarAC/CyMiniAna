@@ -178,6 +178,10 @@ struct MET : CmaBase{
 struct Ttbar0L : CmaBase{
     // 2 FatJets
     std::vector<Ljet> ljets;
+    Ljet top;     // top
+    Ljet antitop; // antitop
+
+    float dy;       // asymmetry : delta|y|
 };
 struct Ttbar1L : CmaBase{
     // 1 FatJet
@@ -186,16 +190,24 @@ struct Ttbar1L : CmaBase{
     Lepton lepton;
     Neutrino neutrino;
     Jet jet;
+    TLorentzVector leptop;
+
+    float dy;       // asymmetry : delta|y|
 };
 struct Ttbar2L : CmaBase{
     // 2 LepTops -- split by top/antitop (lepton charge)
     Lepton lepton_t;
     Neutrino neutrino_t;
     Jet jet_t;
+    TLorentzVector top;
 
     Lepton lepton_tbar;
     Neutrino neutrino_tbar;
     Jet jet_tbar;
+    TLorentzVector antitop;
+
+    float dy;     // asymmetry : delta|y|
+
 };
 
 // ************************************ //
