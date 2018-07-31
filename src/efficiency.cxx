@@ -29,9 +29,9 @@ void efficiency::initialize( TFile& outputFile ){
     outputFile.cd();
 
     efficiencyBase::init_eff("dilution_incl",    1, 0, 1);     // delta|y| reconstruction efficiency (inclusive)
-    efficiencyBase::init_eff("dilution_mtt",   500, 0, 5000);  // delta|y| reconstruction efficiency (mttbar)
-    efficiencyBase::init_eff("dilution_ytt",   100, 0, 1000);  // delta|y| reconstruction efficiency (yttbar)
-    efficiencyBase::init_eff("dilution_pttt",   50, 0, 5);     // delta|y| reconstruction efficiency (pT-ttbar)
+    efficiencyBase::init_eff("dilution_mtt",    50, 0, 5000);  // delta|y| reconstruction efficiency (mttbar)
+    efficiencyBase::init_eff("dilution_ytt",    10, 0, 5);     // delta|y| reconstruction efficiency (yttbar)
+    efficiencyBase::init_eff("dilution_pttt",   10, 0, 1000);  // delta|y| reconstruction efficiency (pT-ttbar)
     efficiencyBase::init_eff("dilution_betatt", 10, 0, 1);     // delta|y| reconstruction efficiency (beta-ttbar)
 
     return;

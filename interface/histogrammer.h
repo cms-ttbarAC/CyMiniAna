@@ -36,11 +36,15 @@ class histogrammer : public histogrammerBase {
     void init_hists_leptons(const std::string& name, const std::string& prefix);
     void init_hists_jets(const std::string& name, const std::string& prefix);
     void init_hists_ljets(const std::string& name, const std::string& prefix);
+    void init_hists_ljetsCWoLa(const std::string& name, const std::string& prefix);
     void init_hists_ttbarAC(const std::string& name);
 
     /* fill histograms */
     virtual void fill( Event& event, const std::vector<unsigned int>& evtsel_decisions=std::vector<unsigned int>() );
     virtual void fill( const std::string& name, Event& event, double event_weight );
+
+    void fill_ljets(const std::string& name, const std::string& prefix, const Ljet& ljet, const float& event_weight);
+    void fill_ljetsCWoLa(const std::string& name, const std::string& prefix, const Ljet& ljet, const float& event_weight);
 
   protected:
 

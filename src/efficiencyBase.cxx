@@ -35,7 +35,7 @@ void efficiencyBase::init_eff(const TH1 &passed, const TH1 &total){
 void efficiencyBase::init_eff( const std::string &name, const unsigned int nBins, const double x_min, const double x_max ){
     /* Initialize efficiency -- equal bins */
     m_map_efficiencies[name] = new TEfficiency((name).c_str(), (name).c_str(),nBins,x_min,x_max);
-    m_map_efficiencies[name]->SetUseWeightedEvents();
+//    m_map_efficiencies[name]->SetUseWeightedEvents();
 
     return;
 }
@@ -43,7 +43,7 @@ void efficiencyBase::init_eff( const std::string &name, const unsigned int nBins
 void efficiencyBase::init_eff( const std::string &name, const unsigned int nBins, const double *xbins ){
     /* Initialize efficiency -- variable bins */
     m_map_efficiencies[name] = new TEfficiency((name).c_str(), (name).c_str(),nBins,xbins);
-    m_map_efficiencies[name]->SetUseWeightedEvents();
+//    m_map_efficiencies[name]->SetUseWeightedEvents();
 
     return;
 }
@@ -54,7 +54,7 @@ void efficiencyBase::init_eff( const std::string &name, const unsigned int nBins
     /* Initialize efficiency -- equal bins */
     m_map_efficiencies[name] = new TEfficiency((name).c_str(), (name).c_str(),
                                                nBinsX,x_min,x_max,nBinsY,y_min,y_max);
-    m_map_efficiencies[name]->SetUseWeightedEvents();
+//    m_map_efficiencies[name]->SetUseWeightedEvents();
 
     return;
 }
@@ -64,22 +64,25 @@ void efficiencyBase::init_eff( const std::string &name, const unsigned int nBins
     /* Initialize efficiency -- variable bins */
     m_map_efficiencies[name] = new TEfficiency((name).c_str(), (name).c_str(),
                                                nBinsX,xbins,nBinsY,ybins);
-    m_map_efficiencies[name]->SetUseWeightedEvents();
+//    m_map_efficiencies[name]->SetUseWeightedEvents();
 
     return;
 }
 
-void efficiencyBase::fill( const std::string &name, const double &value, const bool &decision, const double &weight ){
+
+
+
+void efficiencyBase::fill( const std::string &name, const double &value, const bool &decision ){
     /* Fill efficiencies with values! */
-    m_map_efficiencies.at(name)->FillWeighted(decision, weight, value);
+    m_map_efficiencies.at(name)->Fill(decision, value);
 
     return;
 }
 
 void efficiencyBase::fill( const std::string &name, 
-                         const double &xvalue, const double &yvalue, const bool &decision, const double &weight ){
+                         const double &xvalue, const double &yvalue, const bool &decision ){
     /* Fill efficiencies with values! */
-    m_map_efficiencies.at(name)->Fill(decision, weight, xvalue, yvalue);
+    m_map_efficiencies.at(name)->Fill(decision, xvalue, yvalue);
 
     return;
 }

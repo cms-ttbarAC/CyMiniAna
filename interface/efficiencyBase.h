@@ -43,8 +43,8 @@ class efficiencyBase {
                                   const unsigned int nBinsY, const double *ybins );
 
     /* fill efficiencies */
-    virtual void fill( const std::string &name, const double &value, const bool &decision, const double &weight=1.0 );
-    virtual void fill( const std::string &name, const double &xvalue, const double &yvalue, const bool &decision, const double &weight=1.0 );
+    virtual void fill( const std::string &name, const double &value, const bool &decision );
+    virtual void fill( const std::string &name, const double &xvalue, const double &yvalue, const bool &decision );
 
   protected:
 

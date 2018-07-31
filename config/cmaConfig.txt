@@ -8,7 +8,7 @@ useTruth true
 jet_btag_wkpt L
 makeTTree true
 makeHistograms true
-makeEfficiencies false
+makeEfficiencies true
 input_selection grid
 isExtendedSample false
 output_path ./
