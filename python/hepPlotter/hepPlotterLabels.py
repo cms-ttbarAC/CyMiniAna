@@ -192,6 +192,7 @@ def variable_labels():
     variables['ytt']  = Variable(binning=hist1d(10,0,   5),label=r'y$_{%s}$ [GeV]'%ttbar)
     variables['beta'] = Variable(binning=hist1d(10,0,   1),label=r'$\beta_{z,%s}$ [GeV]'%ttbar)
     variables['dy']   = Variable(binning=hist1d(12,-3,  3),label=r'$\Delta|\text{y}|$')
+    variables['dyres'] = Variable(binning=hist1d(12,-3,  3),label=r'$\Delta|\text{y}|$ Resolution')
 
     variables['deltay']    = variables['dy']
     variables['mttbar']    = variables['mtt']

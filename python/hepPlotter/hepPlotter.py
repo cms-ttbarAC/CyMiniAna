@@ -497,7 +497,7 @@ class HepPlotter(object):
 
         # Configure the colorbar
         cbar = plt.colorbar()
-        if self.logplot["y"]:
+        if self.logplot["data"]:
             cbar.ax.set_yticklabels( [r"10$^{\text{%s}}$"%(util.extract(i.get_text())) for i in cbar.ax.get_yticklabels()] )
         else:
             cbar.ax.set_yticklabels( [r"$\text{%s}$"%(i.get_text().replace(r'$','')) for i in cbar.ax.get_yticklabels()],**fontProperties )
@@ -796,7 +796,16 @@ class HepPlotter(object):
 
     def savefig(self):
         """Save the figure"""
-        plt.savefig(self.saveAs+'.'+self.format,format=self.format,dpi=300,bbox_inches='tight')
+        try:
+            plt.savefig(self.saveAs+'.'+self.format,format=self.format,dpi=300,bbox_inches='tight')
+        except IOError:
+            # directory doesn't exist; create it!
+            filename  = self.saveAs.split("/")[-1]   # should be something like: 'path/to/dir/filename'
+            directory = self.saveAs.replace(filename,'')
+            if not os.path.exists(directory):
+                os.makedirs(directory)
+            else:
+                print " ERROR :: HEPPLOTTER : Savefig error but the directory {0} exists?".format(directory)
         plt.close()
 
         return
