@@ -53,6 +53,7 @@ void metadataTree::createBranches(){
     m_ttree->Branch("kfactor",        &m_kfactor,      "kfactor/F");       // float
     m_ttree->Branch("sumOfWeights",   &m_sumOfWeights, "sumOfWeights/F");  // float
     m_ttree->Branch("NEvents",        &m_NEvents,      "NEvents/i");       // uint
+    m_ttree->Branch("inputFile",      &m_inputFile);                       // string
 
     return;
 }
@@ -67,6 +68,8 @@ void metadataTree::saveMetaData(const Sample& smp){
     m_xsection = smp.XSection;
     m_kfactor  = smp.KFactor;
     m_NEvents  = smp.NEvents;
+
+    m_inputFile = smp.inputFile;
 
     cma::DEBUG("METADATA : Fill the tree");
     m_ttree->Fill();

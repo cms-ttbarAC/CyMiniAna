@@ -52,6 +52,7 @@ class metadataTree : public miniTree {
     float m_xsection;
     float m_kfactor;
     unsigned int m_NEvents;
+    std::string m_inputFile;
 };
 
 #endif

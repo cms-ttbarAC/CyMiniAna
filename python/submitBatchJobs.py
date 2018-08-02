@@ -25,6 +25,16 @@ import commands
 from batch.batchSubmission import BatchSubmission
 
 
+# Make sure the repository is committed first,
+# so we can track down any issues later
+commit = commands.getoutput('git diff-index --quiet HEAD -- || echo "untracked"')
+if commit=='untracked':
+    print "ERROR: There are uncommitted changes to your repository."
+    print "     : Please commit changes and then proceed with the batch job submission."
+    sys.exit(1)
+
+
+
 # setup config
 config = sys.argv[1]
 cfg    = util.read_config(config)
@@ -90,6 +100,15 @@ else:
 
 ## Submit
 batch.execute()
+
+
+## Metadata so that we know what the samples are weeks later!
+metadata
+git_branches = commands.getoutput("git branch").split()  # '  cwoala-dev\n* hadtop-plotter\n  master\n  ttbarAC_skim_v0.5'
+git_branch   = git_branches[ git_branches.index("*") ]   # the current branch follows the '*'
+outputdir    = batch.output_dir
+inputfiles   = util.file2list(batch.file)[0].split("/")  # get the input directory from the first input file (assumes all input files are in the same directory)
+inputdir     = "/".join( inputfiles[:-1] )
 
 
 ## THE END ##

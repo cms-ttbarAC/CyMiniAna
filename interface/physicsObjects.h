@@ -286,6 +286,7 @@ struct TtbarDilepton : DileptonReco {
 // ------------------------ // 
 struct Sample {
     // Struct to contain sample information (processing the input file)
+    std::string inputFile;         // input file name
     std::string sampleType;        // kind of sample, e.g., 'ttbar', 'qcd', 'signal', etc.
     std::string primaryDataset;    // primary dataset (how to identify the sample & metadata)
     float XSection;
@@ -294,6 +295,7 @@ struct Sample {
     unsigned int NEvents;
 
     void clear(){
+        inputFile  = "";
         sampleType = "";
         primaryDataset = "";
         XSection = 1.;

@@ -174,9 +174,10 @@ int main(int argc, char** argv) {
 
         // Setup outputs
         histogrammer histMaker(config);      // initialize histogrammer
-        efficiency effMaker(config);         // initialize efficiency class
         if (makeHistograms)
             histMaker.initialize( *outputFile,doSystWeights );
+
+        efficiency effMaker(config);         // initialize efficiency class
         if (makeEfficiencies)
             effMaker.initialize( *outputFile );
 

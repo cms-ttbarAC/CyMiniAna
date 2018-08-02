@@ -309,9 +309,6 @@ void configuration::readMetadata(TFile& file,const std::string& metadataTreeName
 
         if (!pd_in_map) return;
         m_sample = this_sample;
-
-        m_primaryDataset = m_sample.primaryDataset;
-        m_NTotalEvents   = m_sample.NEvents;
     }
     else{
         m_recalculateMetadata = false;    // first assume the information in the root file (metadata tree) is good to use
@@ -337,10 +334,10 @@ void configuration::readMetadata(TFile& file,const std::string& metadataTreeName
                 m_sample = this_sample;
             }
         }
-
-        m_primaryDataset = m_sample.primaryDataset;
-        m_NTotalEvents   = m_sample.NEvents;
     }
+    m_sample.inputFile = file.GetName();
+    m_primaryDataset   = m_sample.primaryDataset;
+    m_NTotalEvents     = m_sample.NEvents;
 
     cma::DEBUG("CONFIGURATION : Primary dataset = "+m_primaryDataset);
 

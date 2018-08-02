@@ -62,7 +62,7 @@ class BatchSubmission(object):
 
         # Setup options for CyMiniAna
         self.config_options = OrderedDict()
-        config = open(self.config,'r').readlines()
+        config = util.file2list(self.config)
         for i in config:
             j = i.rstrip('\n').split(' ')
             key,item = j
@@ -140,11 +140,9 @@ class BatchSubmission(object):
         # -- Submit jobs
         if not self.file.startswith("/"): self.file = self.baseDir+"/"+self.file
 
-        miniSL_ntuples = open(self.file,'r').readlines() # files to run over
+        miniSL_ntuples = util.file2list(self.file)   # files to process as inputs
 
-        for l,line in enumerate(miniSL_ntuples):
-            minisl_ntuple = line.split()[0]
-
+        for l,minisl_ntuple in enumerate(miniSL_ntuples):
             # -- simplify the filename for reference later
             self.tmp_ntuple = minisl_ntuple.split('/')[-1].replace('.root','')
 
